@@ -1,11 +1,10 @@
+
 /*!
  * Connect - session - Session
  * Copyright(c) 2010 Sencha Inc.
  * Copyright(c) 2011 TJ Holowaychuk
  * MIT Licensed
  */
-
-'use strict';
 
 /**
  * Expose Session.
@@ -22,6 +21,7 @@ module.exports = Session;
  */
 
 function Session(req, data) {
+
   Object.defineProperty(this, 'req', { value: req });
   Object.defineProperty(this, 'id', { value: req.sessionID });
 
@@ -119,7 +119,7 @@ Session.prototype.destroy = function(fn){
  * @api public
  */
 
-Session.prototype.regenerate = function(fn){
-  this.req.sessionStore.regenerate(this.req, fn);
+Session.prototype.regenerate = function(customId, fn){
+  this.req.sessionStore.regenerate(this.req, customId, fn);
   return this;
 };
