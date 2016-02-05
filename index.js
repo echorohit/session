@@ -6,8 +6,6 @@
  * MIT Licensed
  */
 
-'use strict';
-
 /**
  * Module dependencies.
  * @private
@@ -138,11 +136,10 @@ function session(options){
   }
 
   // generates the new session
-  store.generate = function(req){
-    req.sessionID = generateId(req);
+  store.generate = function(req, customId, fn){
+    req.sessionID = customId || generateId(req);
     req.session = new Session(req);
     req.session.cookie = new Cookie(cookieOptions);
-
     if (cookieOptions.secure === 'auto') {
       req.session.cookie.secure = issecure(req, trustProxy);
     }
@@ -262,7 +259,6 @@ function session(options){
 
         return ret;
       }
-
       if (shouldDestroy(req)) {
         // destroy session
         debug('destroying');
@@ -288,11 +284,11 @@ function session(options){
       req.session.touch();
 
       if (shouldSave(req)) {
+
         req.session.save(function onsave(err) {
           if (err) {
             defer(next, err);
           }
-
           writeend();
         });
 
@@ -312,13 +308,14 @@ function session(options){
         return writetop();
       }
 
+
       return _end.call(res, chunk, encoding);
     };
 
     // generate the session
-    function generate() {
+    function generate(customId) {
       store.generate(req);
-      originalId = req.sessionID;
+      originalId = customId || req.sessionID;
       originalHash = hash(req.session);
       wrapmethods(req.session);
     }
@@ -377,6 +374,7 @@ function session(options){
         return false;
       }
 
+
       return cookieId === req.sessionID && !shouldSave(req);
     }
 
@@ -387,9 +385,14 @@ function session(options){
         return false;
       }
 
+      // in case of rolling session, always reset the cookie
+      if (rollingSessions) {
+        return true;
+      }
+
       return cookieId != req.sessionID
         ? saveUninitializedSession || isModified(req.session)
-        : rollingSessions || req.session.cookie.expires != null && isModified(req.session);
+        : req.session.cookie.expires != null && isModified(req.session);
     }
 
     // generate a session if the browser doesn't send a sessionID
