@@ -1,11 +1,10 @@
+
 /*!
  * Connect - session - Store
  * Copyright(c) 2010 Sencha Inc.
  * Copyright(c) 2011 TJ Holowaychuk
  * MIT Licensed
  */
-
-'use strict';
 
 /**
  * Module dependencies.
@@ -37,10 +36,10 @@ Store.prototype.__proto__ = EventEmitter.prototype;
  * @api public
  */
 
-Store.prototype.regenerate = function(req, fn){
+Store.prototype.regenerate = function(req,customId, fn){
   var self = this;
   this.destroy(req.sessionID, function(err){
-    self.generate(req);
+    self.generate(req, customId, fn);
     fn(err);
   });
 };
