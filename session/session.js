@@ -114,11 +114,11 @@ Session.prototype.destroy = function(fn){
 /**
  * Regenerate this request's session.
  *
+ * @param {string} customId
  * @param {Function} fn
  * @return {Session} for chaining
  * @api public
  */
-
 Session.prototype.regenerate = function(customId, fn){
   this.req.sessionStore.regenerate(this.req, customId, fn);
   return this;
