@@ -5,7 +5,7 @@
  * Copyright(c) 2014-2015 Douglas Christopher Wilson
  * MIT Licensed
  */
-
+'use strict';
 /**
  * Module dependencies.
  * @private
@@ -392,7 +392,7 @@ function session(options){
 
       return cookieId != req.sessionID
         ? saveUninitializedSession || isModified(req.session)
-        : req.session.cookie.expires != null && isModified(req.session);
+        :rollingSessions || req.session.cookie.expires != null && isModified(req.session);
     }
 
     // generate a session if the browser doesn't send a sessionID
